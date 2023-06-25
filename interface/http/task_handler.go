@@ -11,6 +11,7 @@ import (
 type TaskInteractor interface {
 	CreateTask(input application.CreateTaskInput) (*entity.Task, error)
 	UpdateTask(input application.UpdateTaskInput) (*entity.Task, error)
+	DeleteTask(input application.DeleteTaskInput) (*entity.Task, error)
 }
 
 type TaskHandler struct {
@@ -47,6 +48,22 @@ func (handler TaskHandler) UpdateTask(c *gin.Context) {
 	}
 
 	task, err := handler.interactor.UpdateTask(input)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, task)
+}
+
+func (handler TaskHandler) DeleteTask(c *gin.Context) {
+	var input application.DeleteTaskInput
+	if err := c.BindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	task, err := handler.interactor.DeleteTask(input)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

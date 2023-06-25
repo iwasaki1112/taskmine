@@ -10,3 +10,7 @@ type UpdateTaskInput struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 }
+
+type DeleteTaskInput struct {
+	ID string `json:"id"`
+}
