@@ -5,15 +5,18 @@ import (
 	"strconv"
 	"taskmine/domain/entity"
 	"taskmine/domain/repository"
+	"taskmine/domain/service"
 )
 
 type TaskInteractor struct {
 	repository repository.TaskRepository
+	notifier   service.WebhookNotifier
 }
 
-func NewTaskInteractor(repository repository.TaskRepository) *TaskInteractor {
+func NewTaskInteractor(repository repository.TaskRepository, notifier service.WebhookNotifier) *TaskInteractor {
 	return &TaskInteractor{
 		repository: repository,
+		notifier:   notifier,
 	}
 }
 
@@ -23,6 +26,13 @@ func (interactor TaskInteractor) CreateTask(input CreateTaskInput) (*entity.Task
 	if err != nil {
 		return nil, err
 	}
+
+	message := task.Title + " has been created"
+	err = interactor.notifier.Notify(message)
+	if err != nil {
+		return nil, err
+	}
+
 	return &task, nil
 }
 

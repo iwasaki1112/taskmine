@@ -10,11 +10,12 @@ import (
 )
 
 type Config struct {
-	DBUser     string
-	DBPassword string
-	DBHost     string
-	DBName     string
-	DBPort     string
+	DBUser          string
+	DBPassword      string
+	DBHost          string
+	DBName          string
+	DBPort          string
+	SlackWebHookURL string
 }
 
 func LoadConfig() (*Config, error) {
@@ -29,14 +30,15 @@ func LoadConfig() (*Config, error) {
 	}
 
 	config := &Config{
-		DBUser:     os.Getenv("DB_USER"),
-		DBPassword: os.Getenv("DB_PASSWORD"),
-		DBHost:     os.Getenv("DB_HOST"),
-		DBName:     os.Getenv("DB_NAME"),
-		DBPort:     os.Getenv("DB_PORT"),
+		DBUser:          os.Getenv("DB_USER"),
+		DBPassword:      os.Getenv("DB_PASSWORD"),
+		DBHost:          os.Getenv("DB_HOST"),
+		DBName:          os.Getenv("DB_NAME"),
+		DBPort:          os.Getenv("DB_PORT"),
+		SlackWebHookURL: os.Getenv("SLACK_WEBHOOK_URL"),
 	}
 
-	if config.DBUser == "" || config.DBPassword == "" || config.DBHost == "" || config.DBName == "" || config.DBPort == "" {
+	if config.SlackWebHookURL == "" || config.DBUser == "" || config.DBPassword == "" || config.DBHost == "" || config.DBName == "" || config.DBPort == "" {
 		return nil, errors.New("missing required environment variable")
 	}
 
