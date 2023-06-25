@@ -1,0 +1,15 @@
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:latest
+    platform: linux/x86_64
+    volumes:
+      - ./.docker/mysql:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      TZ: Asia/Tokyo
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: taskminedb
+      MYSQL_USER: taskmineuser
+      MYSQL_PASSWORD: password
