@@ -11,10 +11,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type mockClient struct {
-	http.Client
-}
-
 var slackWebhookURL string
 
 func TestMain(m *testing.M) {
@@ -36,7 +32,10 @@ func TestMain(m *testing.M) {
 func TestNotifyWithMock(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
+		_, err := w.Write([]byte("OK"))
+		if err != nil {
+			log.Printf("failed to write response: %v", err)
+		}
 	}))
 	defer server.Close()
 

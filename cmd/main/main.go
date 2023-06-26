@@ -38,5 +38,8 @@ func main() {
 	taskGroup.POST("/", taskHandler.CreateTask)
 	taskGroup.PATCH("/", taskHandler.UpdateTask)
 	taskGroup.DELETE("/", taskHandler.DeleteTask)
-	r.Run(":8080")
+	err = r.Run(":8080")
+	if err != nil {
+		log.Fatal("faild to run server")
+	}
 }
