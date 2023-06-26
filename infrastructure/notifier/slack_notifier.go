@@ -20,7 +20,7 @@ func NewSlackNotifier(url string) service.WebhookNotifier {
 	return &SlackNotifier{WebhookURL: url}
 }
 
-func (notifier *SlackNotifier) Notify(message string) error {
+func (n *SlackNotifier) Notify(message string) error {
 	slackMessage := SlackMessage{
 		Text: message,
 	}
@@ -29,7 +29,7 @@ func (notifier *SlackNotifier) Notify(message string) error {
 		return err
 	}
 
-	response, err := http.Post(notifier.WebhookURL, "application/json", bytes.NewBuffer(jsonData))
+	response, err := http.Post(n.WebhookURL, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return err
 	}

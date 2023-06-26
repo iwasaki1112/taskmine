@@ -24,14 +24,14 @@ func NewTaskHandler(interactor TaskInteractor) *TaskHandler {
 	}
 }
 
-func (handler TaskHandler) CreateTask(c *gin.Context) {
+func (h TaskHandler) CreateTask(c *gin.Context) {
 	var input application.CreateTaskInput
 	if err := c.BindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	task, err := handler.interactor.CreateTask(input)
+	task, err := h.interactor.CreateTask(input)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -40,14 +40,14 @@ func (handler TaskHandler) CreateTask(c *gin.Context) {
 	c.JSON(http.StatusOK, task)
 }
 
-func (handler TaskHandler) UpdateTask(c *gin.Context) {
+func (h TaskHandler) UpdateTask(c *gin.Context) {
 	var input application.UpdateTaskInput
 	if err := c.BindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	task, err := handler.interactor.UpdateTask(input)
+	task, err := h.interactor.UpdateTask(input)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -56,14 +56,14 @@ func (handler TaskHandler) UpdateTask(c *gin.Context) {
 	c.JSON(http.StatusOK, task)
 }
 
-func (handler TaskHandler) DeleteTask(c *gin.Context) {
+func (h TaskHandler) DeleteTask(c *gin.Context) {
 	var input application.DeleteTaskInput
 	if err := c.BindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	task, err := handler.interactor.DeleteTask(input)
+	task, err := h.interactor.DeleteTask(input)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

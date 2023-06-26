@@ -20,15 +20,15 @@ func NewTaskInteractor(repository repository.TaskRepository, notifier service.We
 	}
 }
 
-func (interactor TaskInteractor) CreateTask(input CreateTaskInput) (*entity.Task, error) {
+func (i TaskInteractor) CreateTask(input CreateTaskInput) (*entity.Task, error) {
 	task := entity.Task{Title: input.Title, Description: input.Description, Status: entity.TODO}
-	err := interactor.repository.Store(&task)
+	err := i.repository.Store(&task)
 	if err != nil {
 		return nil, err
 	}
 
 	message := task.Title + " has been created"
-	err = interactor.notifier.Notify(message)
+	err = i.notifier.Notify(message)
 	if err != nil {
 		return nil, err
 	}
@@ -36,13 +36,13 @@ func (interactor TaskInteractor) CreateTask(input CreateTaskInput) (*entity.Task
 	return &task, nil
 }
 
-func (interactor TaskInteractor) UpdateTask(input UpdateTaskInput) (*entity.Task, error) {
+func (i TaskInteractor) UpdateTask(input UpdateTaskInput) (*entity.Task, error) {
 	id, err := strconv.ParseUint(input.ID, 10, 64)
 	if err != nil {
 		log.Fatal("faild to convert string to uint")
 	}
 
-	task, err := interactor.repository.FindByID(uint(id))
+	task, err := i.repository.FindByID(uint(id))
 	if err != nil {
 		log.Fatalf("faild to get task that id is %s", input.ID)
 	}
@@ -51,7 +51,7 @@ func (interactor TaskInteractor) UpdateTask(input UpdateTaskInput) (*entity.Task
 	task.Description = input.Description
 	task.Status = entity.TODO
 
-	err = interactor.repository.Update(task)
+	err = i.repository.Update(task)
 	if err != nil {
 		return nil, err
 	}
@@ -59,18 +59,18 @@ func (interactor TaskInteractor) UpdateTask(input UpdateTaskInput) (*entity.Task
 	return task, nil
 }
 
-func (interactor TaskInteractor) DeleteTask(input DeleteTaskInput) (*entity.Task, error) {
+func (i TaskInteractor) DeleteTask(input DeleteTaskInput) (*entity.Task, error) {
 	id, err := strconv.ParseUint(input.ID, 10, 64)
 	if err != nil {
 		log.Fatal("faild to convert string to uint")
 	}
 
-	task, err := interactor.repository.FindByID(uint(id))
+	task, err := i.repository.FindByID(uint(id))
 	if err != nil {
 		log.Fatalf("faild to get task that id is %s", input.ID)
 	}
 
-	err = interactor.repository.Delete(task)
+	err = i.repository.Delete(task)
 	if err != nil {
 		return nil, err
 	}
