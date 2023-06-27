@@ -1,10 +1,12 @@
 package entity
 
-import "gorm.io/gorm"
+import "time"
 
 type Task struct {
-	gorm.Model
-	Title       string     `gorm:"type:varchar(100)"`
-	Description string     `gorm:"type:text"`
-	Status      TaskStatus `gorm:"type:integer"`
+	ID          uint
+	Title       string
+	Description string
+	Status      TaskStatus
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }

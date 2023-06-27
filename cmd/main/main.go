@@ -5,8 +5,8 @@ import (
 	"taskmine/application"
 	"taskmine/config"
 	"taskmine/domain/entity"
-	"taskmine/infrastructure"
-	"taskmine/infrastructure/notifier"
+	"taskmine/infra/database"
+	"taskmine/infra/notifier"
 	"taskmine/interface/http"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +18,7 @@ func main() {
 		log.Fatal("No get db info")
 	}
 
-	DB, err := infrastructure.ConnectMysql(config)
+	DB, err := database.ConnectMysql(config)
 	if err != nil {
 		log.Fatal("faild to connect Mysql")
 	}
@@ -28,7 +28,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	taskRepository := infrastructure.NewMysqlTaskRepository(DB)
+	taskRepository := database.NewMysqlTaskRepository(DB)
 	slackNotifier := notifier.NewSlackNotifier(config.SlackWebHookURL)
 	taskInteractor := application.NewTaskInteractor(taskRepository, slackNotifier)
 	taskHandler := http.NewTaskHandler(taskInteractor)

@@ -1,7 +1,8 @@
-package infrastructure
+package database
 
 import (
 	"taskmine/domain/entity"
+	"taskmine/infra/model"
 
 	"gorm.io/gorm"
 )
@@ -17,26 +18,36 @@ func NewMysqlTaskRepository(DB *gorm.DB) *MysqlTaskRepository {
 }
 
 func (r *MysqlTaskRepository) Store(task *entity.Task) error {
-	return r.DB.Create(task).Error
+	var taskModel = toTaskModel(task)
+	return r.DB.Create(&taskModel).Error
 }
 
 func (r *MysqlTaskRepository) Update(task *entity.Task) error {
-	return r.DB.Save(task).Error
+	var taskModel = toTaskModel(task)
+	return r.DB.Save(&taskModel).Error
 }
 
 func (r *MysqlTaskRepository) Delete(task *entity.Task) error {
-	r.DB.First(task)
-	return r.DB.Delete(task).Error
+	var taskModel = toTaskModel(task)
+	r.DB.First(&taskModel)
+	return r.DB.Delete(&taskModel).Error
 }
 
 func (r *MysqlTaskRepository) FindAll() ([]*entity.Task, error) {
+	var taskModels []*model.Task
+	err := r.DB.Find(&taskModels).Error
+
 	var tasks []*entity.Task
-	err := r.DB.Find(&tasks).Error
+	for _, taskModel := range taskModels {
+		task := toTaskEntity(taskModel)
+		tasks = append(tasks, &task)
+	}
 	return tasks, err
 }
 
 func (r *MysqlTaskRepository) FindByID(id uint) (*entity.Task, error) {
-	var task *entity.Task
+	var task *model.Task
 	err := r.DB.Find(&task, id).Error
-	return task, err
+	taskModel := toTaskEntity(task)
+	return &taskModel, err
 }
