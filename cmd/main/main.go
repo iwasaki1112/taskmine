@@ -7,9 +7,8 @@ import (
 	"taskmine/domain/entity"
 	"taskmine/infra/database"
 	"taskmine/infra/notifier"
+	"taskmine/infra/router"
 	"taskmine/interface/http"
-
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -32,14 +31,7 @@ func main() {
 	slackNotifier := notifier.NewSlackNotifier(config.SlackWebHookURL)
 	taskInteractor := application.NewTaskInteractor(taskRepository, slackNotifier)
 	taskHandler := http.NewTaskHandler(taskInteractor)
-	r := gin.Default()
+	router := router.NewRouter(taskHandler)
+	router.StartServer()
 
-	taskGroup := r.Group("/task")
-	taskGroup.POST("/", taskHandler.CreateTask)
-	taskGroup.PATCH("/", taskHandler.UpdateTask)
-	taskGroup.DELETE("/", taskHandler.DeleteTask)
-	err = r.Run(":8080")
-	if err != nil {
-		log.Fatal("faild to run server")
-	}
 }
