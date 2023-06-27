@@ -5,44 +5,49 @@ import (
 	"taskmine/application"
 	"taskmine/config"
 	"taskmine/domain/entity"
+	"taskmine/domain/repository"
+	"taskmine/domain/service"
 	"taskmine/infra/database"
+	"taskmine/infra/database/mysql"
 	"taskmine/infra/notifier"
 	"taskmine/infra/router"
 	"taskmine/interface/http"
 )
 
 func main() {
-	err := config.LoadEnvironmentVariables()
-	if err != nil {
+	// initialize environemnet variables.
+	if err := config.LoadEnvironmentVariables(); err != nil {
 		log.Fatal(err)
 	}
 
+	// initialize db variables.
 	DBConfig, err := config.LoadDBConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// initialize google AOuth variables.
 	googleAOuthConfig, err := config.LoadGoogleOAuthConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	DB, err := database.ConnectMysql(DBConfig)
-	if err != nil {
-		log.Fatal("faild to connect Mysql")
+	// initialize database connection.
+	var dbConnector database.DbConnector = mysql.NewConnector()
+	if err = dbConnector.Connect(DBConfig); err != nil {
+		log.Fatal(err)
 	}
-
-	err = DB.AutoMigrate(&entity.Task{})
-	if err != nil {
+	if err = dbConnector.AutoMigration(&entity.Task{}); err != nil {
 		log.Fatal(err)
 	}
 
-	taskRepository := database.NewMysqlTaskRepository(DB)
-	slackNotifier := notifier.NewSlackNotifier(DBConfig.SlackWebHookURL)
-	taskInteractor := application.NewTaskInteractor(taskRepository, slackNotifier)
-	taskHandler := http.NewTaskHandler(taskInteractor)
-	authHandler := http.NewAuthHandler(*googleAOuthConfig)
-	router := router.NewRouter(taskHandler, authHandler)
+	var taskRepository repository.TaskRepository = mysql.NewTaskRepository(dbConnector.GetDB())
+	var slackNotifier service.WebhookNotifier = notifier.NewSlackNotifier(DBConfig.SlackWebHookURL)
+
+	var taskInteractor = application.NewTaskInteractor(taskRepository, slackNotifier)
+	var taskHandler = http.NewTaskHandler(taskInteractor)
+	var authHandler = http.NewAuthHandler(googleAOuthConfig)
+	var router *router.Router = router.NewRouter(taskHandler, authHandler)
 	router.StartServer()
 
 }

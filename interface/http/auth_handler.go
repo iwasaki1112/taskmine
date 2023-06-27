@@ -11,9 +11,9 @@ type AuthHandler struct {
 	config oauth2.Config
 }
 
-func NewAuthHandler(config oauth2.Config) *AuthHandler {
+func NewAuthHandler(config *oauth2.Config) *AuthHandler {
 	return &AuthHandler{
-		config: config,
+		config: *config,
 	}
 }
 

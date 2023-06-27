@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func toTaskModel(task *entity.Task) model.Task {
+func ToTaskModel(task *entity.Task) model.Task {
 	return model.Task{
 		Model: gorm.Model{
 			ID:        task.ID,
@@ -21,7 +21,7 @@ func toTaskModel(task *entity.Task) model.Task {
 	}
 }
 
-func toTaskEntity(task *model.Task) entity.Task {
+func ToTaskEntity(task *model.Task) entity.Task {
 	return entity.Task{
 		ID:          task.ID,
 		Title:       task.Title,
