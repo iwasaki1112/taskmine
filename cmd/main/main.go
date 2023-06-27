@@ -12,12 +12,22 @@ import (
 )
 
 func main() {
-	config, err := config.LoadConfig()
+	err := config.LoadEnvironmentVariables()
 	if err != nil {
-		log.Fatal("No get db info")
+		log.Fatal(err)
 	}
 
-	DB, err := database.ConnectMysql(config)
+	DBConfig, err := config.LoadDBConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	googleAOuthConfig, err := config.LoadGoogleOAuthConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	DB, err := database.ConnectMysql(DBConfig)
 	if err != nil {
 		log.Fatal("faild to connect Mysql")
 	}
@@ -28,10 +38,11 @@ func main() {
 	}
 
 	taskRepository := database.NewMysqlTaskRepository(DB)
-	slackNotifier := notifier.NewSlackNotifier(config.SlackWebHookURL)
+	slackNotifier := notifier.NewSlackNotifier(DBConfig.SlackWebHookURL)
 	taskInteractor := application.NewTaskInteractor(taskRepository, slackNotifier)
 	taskHandler := http.NewTaskHandler(taskInteractor)
-	router := router.NewRouter(taskHandler)
+	authHandler := http.NewAuthHandler(*googleAOuthConfig)
+	router := router.NewRouter(taskHandler, authHandler)
 	router.StartServer()
 
 }
