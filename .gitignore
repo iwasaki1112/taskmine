@@ -1,3 +1,4 @@
 .env
 .docker
 .note.md
+.DS_Store

@@ -1,4 +1,14 @@
 services:
+  app:
+    container_name: go
+    build: .
+    volumes:
+      - .:/app
+    tty: true
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
   mysql:
     container_name: mysql
     image: mysql:latest
