@@ -10,6 +10,8 @@ import (
 	"gorm.io/gorm"
 )
 
+var testTime = time.Now()
+
 func setup() (*gorm.DB, sqlmock.Sqlmock, error) {
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
@@ -23,7 +25,7 @@ func setup() (*gorm.DB, sqlmock.Sqlmock, error) {
 		}),
 		&gorm.Config{
 			NowFunc: func() time.Time {
-				return time.Now().Truncate(time.Millisecond)
+				return testTime
 			},
 		},
 	)
@@ -74,8 +76,6 @@ func TestUpdate(t *testing.T) {
 	}
 
 	r := NewTaskRepository(DB)
-
-	testTime := time.Now().Round(time.Millisecond)
 
 	task := &entity.Task{
 		ID:          1,
