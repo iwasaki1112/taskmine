@@ -31,3 +31,11 @@ func ToTaskEntity(task *model.Task) entity.Task {
 		UpdatedAt:   task.UpdatedAt,
 	}
 }
+
+func ToTaskUpdateModel(task *entity.Task) model.Task {
+	return model.Task{
+		Title:       task.Title,
+		Description: task.Description,
+		Status:      int(task.Status),
+	}
+}

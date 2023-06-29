@@ -24,8 +24,8 @@ func (r *TaskRepository) Store(task *entity.Task) error {
 }
 
 func (r *TaskRepository) Update(task *entity.Task) error {
-	var taskModel = database.ToTaskModel(task)
-	return r.DB.Save(&taskModel).Error
+	var taskModel = database.ToTaskUpdateModel(task)
+	return r.DB.Model(&taskModel).Where("id = ?", task.ID).Updates(taskModel).Error
 }
 
 func (r *TaskRepository) Delete(task *entity.Task) error {

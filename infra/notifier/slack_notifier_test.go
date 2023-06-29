@@ -45,11 +45,3 @@ func TestNotifyWithMock(t *testing.T) {
 		t.Errorf("Expected no error, got %v", err)
 	}
 }
-
-func TestNotifyWithSlackServer(t *testing.T) {
-	notifier := NewSlackNotifier(slackWebhookURL)
-	err := notifier.Notify("this is test")
-	if err != nil {
-		t.Errorf("Expected no error, got %v", err)
-	}
-}

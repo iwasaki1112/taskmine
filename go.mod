@@ -3,7 +3,9 @@ module taskmine
 go 1.20
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/gin-gonic/gin v1.9.1
+	github.com/iwasaki1112/fileexplorer v0.0.0-20230628065517-f5f55689bcc2
 	github.com/joho/godotenv v1.5.1
 	golang.org/x/oauth2 v0.9.0
 	gorm.io/driver/mysql v1.5.1
