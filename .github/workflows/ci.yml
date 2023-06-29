@@ -16,14 +16,8 @@ jobs:
       - name: Set up Go 1.2
         uses: actions/setup-go@v3
         with:
-          go-version: ^1.15
-          
-      - name: Show current directory
-        run: pwd
-      - name: List directory
-        run: ls -la
-        
-      - name: Build
-        run: go build -v ./...
+          go-version: ^1.15                        
+      # - name: Build
+      #   run: go build -v ./...
       - name: Test
         run: go test -v ./...
