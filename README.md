@@ -3,4 +3,4 @@ This project utilizes the Clean Architecture with Go lang and a REST API server 
 
 Please feel free to submit any issues or pull requests. I greatly appreciate your contributions.
 
-Thank you👋
+Thank you👋 
